@@ -10,7 +10,7 @@ npm test        # builds and runs the test suite
 npm run report  # scan this repository with the local build
 ```
 
-Node 20.11 or newer. No other tooling.
+Node 22 or newer. No other tooling.
 
 ## Good first contributions
 
@@ -22,7 +22,7 @@ Node 20.11 or newer. No other tooling.
 
 1. Open an issue first for anything larger than a typo, so the design does not get re-litigated in review.
 2. Keep the public surface small: new CLI flags need a README entry and a test.
-3. Run `npm test` before pushing. CI runs the same command on Node 20, 22 and 24.
+3. Run `npm test` before pushing. CI runs the same command on Node 22 and 24.
 4. Use Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`) — the project scores its own commit quality, so it would be embarrassing otherwise.
 
 ## Code style

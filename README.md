@@ -7,7 +7,7 @@ RepoLens reads a repository's history and working tree, scores it across five di
 [![npm version](https://img.shields.io/npm/v/repolens-cli?color=4f9df7)](https://www.npmjs.com/package/repolens-cli)
 [![CI](https://github.com/feng540/repolens/actions/workflows/ci.yml/badge.svg)](https://github.com/feng540/repolens/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![node](https://img.shields.io/badge/node-%3E%3D20.11-brightgreen.svg)](package.json)
+[![node](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](package.json)
 
 ![RepoLens report](docs/report.png)
 
