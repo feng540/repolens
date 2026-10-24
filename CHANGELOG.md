@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-24
+
+### Added
+
+- Shallow-clone detection: CI checkouts and `git clone --depth 1` only expose part of the history, which made activity and collaboration look like decline. RepoLens now flags it in the report, in the terminal summary, and as `meta.shallow` in `--json`.
+
+### Changed
+
+- The project's own CI checks out the full history (`fetch-depth: 0`) and runs on the current action majors, so the uploaded self-report is complete.
+
 ## [0.1.1] - 2026-10-24
 
 ### Changed

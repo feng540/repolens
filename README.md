@@ -64,12 +64,17 @@ Exit codes: `0` success, `1` not a repository / below `--min`.
 ## In CI
 
 ```yaml
+- uses: actions/checkout@v7
+  with:
+    fetch-depth: 0          # RepoLens scores history: a depth-1 clone hides it
 - run: npx repolens-health . --out report.html --min 70
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@v7
   with:
     name: repolens-report
     path: report.html
 ```
+
+If the checkout is shallow, the report says so instead of quietly scoring a truncated history.
 
 `--json` is stable enough to feed a badge service or a dashboard:
 

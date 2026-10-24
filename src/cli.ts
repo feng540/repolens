@@ -120,6 +120,11 @@ async function main(): Promise<void> {
   }
 
   printSummary(target, score, result.meta.name);
+  if (result.meta.shallow) {
+    process.stdout.write(
+      `\n${paint(33, "note")} ${dim("shallow clone — history is partial, so activity and collaboration read low. Run \`git fetch --unshallow\` for the full picture.")}\n`,
+    );
+  }
   process.stdout.write(`\n${dim("Report")} ${displayPath(outPath)}${dim(` (${(Buffer.byteLength(html) / 1024).toFixed(1)} KB)`)}\n`);
   if (badgePath) process.stdout.write(`${dim("Badge ")} ${displayPath(badgePath)}\n`);
 

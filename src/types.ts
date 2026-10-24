@@ -64,6 +64,8 @@ export interface RepoMeta {
   branch: string;
   remote: string | null;
   head: string;
+  /** True when the history is clipped by a shallow clone (CI checkouts often are). */
+  shallow: boolean;
   version: string | null;
   description: string | null;
 }

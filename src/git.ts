@@ -42,11 +42,12 @@ export async function isGitRepo(root: string): Promise<boolean> {
 }
 
 export async function repoMeta(root: string) {
-  const [branch, remote, head, count] = await Promise.all([
+  const [branch, remote, head, count, shallow] = await Promise.all([
     tryGit(root, ["rev-parse", "--abbrev-ref", "HEAD"]),
     tryGit(root, ["config", "--get", "remote.origin.url"]),
     tryGit(root, ["rev-parse", "--short", "HEAD"]),
     tryGit(root, ["rev-list", "--count", "HEAD"]),
+    tryGit(root, ["rev-parse", "--is-shallow-repository"]),
   ]);
   const cleanRemote = remote?.trim() || null;
   return {
@@ -55,6 +56,7 @@ export async function repoMeta(root: string) {
     branch: branch?.trim() || "HEAD",
     remote: cleanRemote,
     head: head?.trim() || "",
+    shallow: shallow?.trim() === "true",
     totalCommits: Number.parseInt(count?.trim() || "0", 10) || 0,
   };
 }

@@ -7,6 +7,7 @@ import { after, describe, it } from "node:test";
 import { isGitRepo, readCommits } from "../dist/git.js";
 import { scan } from "../dist/scan.js";
 import { evaluate } from "../dist/metrics.js";
+import { renderReport } from "../dist/report/html.js";
 
 const created: string[] = [];
 
@@ -81,6 +82,23 @@ describe("scan", () => {
     assert.ok(score.total >= 0 && score.total <= 100);
     assert.equal(score.dimensions.length, 5);
     assert.match(score.grade, /^[ABCDE]\+?$/);
+  });
+
+  it("flags a shallow clone so partial history is not read as decline", async () => {
+    const source = makeRepo();
+    const shallow = mkdtempSync(join(tmpdir(), "repolens-shallow-"));
+    created.push(shallow);
+    execFileSync("git", ["clone", "--depth", "1", `file://${source.replace(/\\/g, "/")}`, shallow], { encoding: "utf8" });
+
+    const partial = await scan(shallow);
+    assert.equal(partial.meta.shallow, true);
+    assert.equal(partial.sampledCommits, 1);
+    const html = renderReport(partial, evaluate(partial), { version: "test" });
+    assert.match(html, /shallow clone/);
+    assert.match(html, /git fetch --unshallow/);
+
+    const full = await scan(source);
+    assert.equal(full.meta.shallow, false);
   });
 
   it("refuses a directory that is not a repository", async () => {

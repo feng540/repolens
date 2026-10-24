@@ -78,6 +78,8 @@ export function renderReport(scan: RepoScan, result: ScoreResult, options: Rende
     </div>
   </header>
 
+  ${scan.meta.shallow ? shallowNotice(scan) : ""}
+
   <section class="card">
     <div class="card-head">
       <h2>Scorecard</h2>
@@ -163,6 +165,16 @@ function ring(score: number, color: string): string {
     <text x="64" y="72" text-anchor="middle" font-size="34" font-weight="700" fill="#e6edf3">${score}</text>
     <text x="64" y="92" text-anchor="middle" font-size="10" fill="#8b949e" letter-spacing="1.2">/ 100</text>
   </svg>`;
+}
+
+function shallowNotice(scan: RepoScan): string {
+  const many = scan.sampledCommits === 1 ? "commit" : "commits";
+  const verb = scan.sampledCommits === 1 ? "is" : "are";
+  return `<section class="card notice">
+    <p class="notice-title">Partial history · this is a shallow clone</p>
+    <p class="notice-body">Only ${num(scan.sampledCommits)} ${many} ${verb} visible, so activity and collaboration are scored on an incomplete record.
+    Run <code>git fetch --unshallow</code> (or drop <code>--depth</code> from the clone) and analyse again for the real numbers.</p>
+  </section>`;
 }
 
 function weakest(dimensions: Dimension[]): Dimension | undefined {
@@ -375,6 +387,10 @@ h1 { margin: 0; font-size: 44px; line-height: 1.1; letter-spacing: -1.2px; }
 .grade { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-top: 2px; }
 .grade-label { font-size: 11px; letter-spacing: 1.6px; color: var(--muted); text-transform: uppercase; }
 .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; }
+.notice { border-color: rgba(210,153,34,.45); background: linear-gradient(180deg, rgba(210,153,34,.10), rgba(18,23,34,.98)); }
+.notice-title { margin: 0 0 6px; font-size: 13px; letter-spacing: .3px; color: var(--amber); font-weight: 600; }
+.notice-body { margin: 0; color: var(--muted); font-size: 13px; }
+code { font: 12px/1.5 ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace; background: rgba(255,255,255,.07); border-radius: 5px; padding: 1px 5px; color: #c9d1d9; }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
 h2 { font-size: 13px; letter-spacing: 1.6px; text-transform: uppercase; margin: 0; color: #c9d1d9; }
 .muted { color: var(--muted); font-size: 12.5px; margin: 0; }
