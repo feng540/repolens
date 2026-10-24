@@ -1,10 +1,11 @@
 {
-  "name": "repolens-cli",
-  "version": "0.1.0",
+  "name": "repolens-health",
+  "version": "0.1.1",
   "description": "One command. A health report for any git repository — activity, collaboration, hygiene, structure and commit quality, scored.",
   "type": "module",
   "bin": {
-    "repolens": "dist/cli.js"
+    "repolens": "dist/cli.js",
+    "repolens-health": "dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

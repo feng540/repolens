@@ -38,7 +38,7 @@ Include the output of:
 ```bash
 node --version
 git --version
-npx repolens-cli . --json
+npx repolens-health . --json
 ```
 
 If the repository is private, the JSON structure alone is usually enough to reproduce the scoring bug.

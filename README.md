@@ -4,7 +4,7 @@
 
 RepoLens reads a repository's history and working tree, scores it across five dimensions, and writes a single self-contained HTML report — plus a badge and machine-readable JSON for CI.
 
-[![npm version](https://img.shields.io/npm/v/repolens-cli?color=4f9df7)](https://www.npmjs.com/package/repolens-cli)
+[![npm version](https://img.shields.io/npm/v/repolens-health?color=4f9df7)](https://www.npmjs.com/package/repolens-health)
 [![CI](https://github.com/feng540/repolens/actions/workflows/ci.yml/badge.svg)](https://github.com/feng540/repolens/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](package.json)
@@ -12,7 +12,7 @@ RepoLens reads a repository's history and working tree, scores it across five di
 ![RepoLens report](docs/report.png)
 
 ```bash
-npx repolens-cli .
+npx repolens-health .
 ```
 
 ## Why this exists
@@ -38,12 +38,12 @@ The score is a conversation starter, not a verdict. A stable library with two co
 ## Usage
 
 ```bash
-npx repolens-cli                          # scan the current directory
-npx repolens-cli ~/code/express           # scan another repository
-npx repolens-cli . --badge badge.svg      # also write an SVG badge
-npx repolens-cli . --open                 # open the report when finished
-npx repolens-cli . --json                 # machine-readable metrics
-npx repolens-cli . --min 70               # exit 1 when the score is below 70
+npx repolens-health                          # scan the current directory
+npx repolens-health ~/code/express           # scan another repository
+npx repolens-health . --badge badge.svg      # also write an SVG badge
+npx repolens-health . --open                 # open the report when finished
+npx repolens-health . --json                 # machine-readable metrics
+npx repolens-health . --min 70               # exit 1 when the score is below 70
 ```
 
 | Option | Description |
@@ -61,7 +61,7 @@ Exit codes: `0` success, `1` not a repository / below `--min`.
 ## In CI
 
 ```yaml
-- run: npx repolens-cli . --out report.html --min 70
+- run: npx repolens-health . --out report.html --min 70
 - uses: actions/upload-artifact@v4
   with:
     name: repolens-report
@@ -71,13 +71,13 @@ Exit codes: `0` success, `1` not a repository / below `--min`.
 `--json` is stable enough to feed a badge service or a dashboard:
 
 ```bash
-npx repolens-cli . --json | jq '{total, grade, dimensions: [.dimensions[] | {key, score}]}'
+npx repolens-health . --json | jq '{total, grade, dimensions: [.dimensions[] | {key, score}]}'
 ```
 
 ## Badge
 
 ```bash
-npx repolens-cli . --badge badge.svg
+npx repolens-health . --badge badge.svg
 ```
 
 ```md

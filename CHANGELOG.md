@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-24
+
+### Changed
+
+- Published to npm as `repolens-health` (the shorter `repolens-cli` name was rejected as too similar to the existing `repo-lens-cli`).
+- Added a `repolens-health` binary alias so `npx repolens-health .` resolves without `-p`.
+
 ## [0.1.0] - 2026-10-24
 
 ### Added
