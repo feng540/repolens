@@ -4,7 +4,7 @@
   "description": "One command. A health report for any git repository — activity, collaboration, hygiene, structure and commit quality, scored.",
   "type": "module",
   "bin": {
-    "repolens": "./dist/cli.js"
+    "repolens": "dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
