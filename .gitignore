@@ -1,0 +1,6 @@
+node_modules/
+dist/
+report.html
+badge.svg
+*.log
+.DS_Store

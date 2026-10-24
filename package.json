@@ -1,0 +1,48 @@
+{
+  "name": "repolens-cli",
+  "version": "0.1.0",
+  "description": "One command. A health report for any git repository — activity, collaboration, hygiene, structure and commit quality, scored.",
+  "type": "module",
+  "bin": {
+    "repolens": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "npm run build && node --test --test-reporter=dot test/git.test.ts test/report.test.ts",
+    "report": "node dist/cli.js . --out report.html",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "git",
+    "repository",
+    "health",
+    "metrics",
+    "cli",
+    "report",
+    "audit",
+    "score"
+  ],
+  "license": "MIT",
+  "author": "feng540",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feng540/repolens.git"
+  },
+  "bugs": {
+    "url": "https://github.com/feng540/repolens/issues"
+  },
+  "homepage": "https://github.com/feng540/repolens#readme",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
