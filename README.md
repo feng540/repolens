@@ -8,12 +8,15 @@ RepoLens reads a repository's history and working tree, scores it across five di
 [![CI](https://github.com/feng540/repolens/actions/workflows/ci.yml/badge.svg)](https://github.com/feng540/repolens/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](package.json)
+[![live report](https://img.shields.io/badge/live%20report-open-4f9df7.svg)](https://feng540.github.io/repolens/)
 
 ![RepoLens report](docs/report.png)
 
 ```bash
 npx repolens-health .
 ```
+
+**[See a live report →](https://feng540.github.io/repolens/)** — this is the report RepoLens produced for `express`, unedited.
 
 ## Why this exists
 

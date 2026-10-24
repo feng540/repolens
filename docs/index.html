@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>express · RepoLens report</title>
+<meta name="description" content="Repository health report for express — scored 72/100.">
+<style>
+:root {
+  --bg: #0b0e14;
+  --panel: #121722;
+  --panel-2: #161d2b;
+  --line: rgba(255,255,255,.08);
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #4f9df7;
+  --green: #3fb950;
+  --lime: #7cc243;
+  --amber: #d29922;
+  --orange: #e3742b;
+  --red: #f85149;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(79,157,247,.16), transparent 60%),
+    radial-gradient(700px 400px at 92% 0%, rgba(188,140,255,.12), transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 72px; }
+.hero { display: flex; gap: 32px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 28px; }
+.eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 11px; letter-spacing: 2.4px; color: var(--muted); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+h1 { margin: 0; font-size: 44px; line-height: 1.1; letter-spacing: -1.2px; }
+.desc { margin: 10px 0 0; color: var(--muted); max-width: 620px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 20px 0 0; }
+.facts li { font-size: 12px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
+.facts span { color: var(--muted); margin-right: 6px; }
+.hero-score { text-align: center; }
+.ring { width: 150px; height: 150px; display: block; }
+.grade { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-top: 2px; }
+.grade-label { font-size: 11px; letter-spacing: 1.6px; color: var(--muted); text-transform: uppercase; }
+.card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+h2 { font-size: 13px; letter-spacing: 1.6px; text-transform: uppercase; margin: 0; color: #c9d1d9; }
+.muted { color: var(--muted); font-size: 12.5px; margin: 0; }
+.cols { display: grid; grid-template-columns: 1.55fr 1fr; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } h1 { font-size: 34px; } }
+
+.dims { display: flex; flex-direction: column; gap: 2px; }
+.dim { border-top: 1px solid var(--line); }
+.dim:first-child { border-top: 0; }
+.dim summary { display: grid; grid-template-columns: 220px 1fr 48px; gap: 18px; align-items: center; padding: 11px 0; cursor: pointer; list-style: none; }
+.dim summary::-webkit-details-marker { display: none; }
+.dim-label { font-size: 14px; display: flex; align-items: baseline; gap: 10px; }
+.dim-label em { font-style: normal; font-size: 11px; color: var(--muted); }
+.track { height: 7px; border-radius: 6px; background: rgba(255,255,255,.06); overflow: hidden; }
+.track i { display: block; height: 100%; border-radius: 6px; }
+.dim-score { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 16px; }
+.chev { display: inline-block; margin-left: 8px; color: var(--muted); font-weight: 400; transition: transform .15s ease; }
+details[open] .chev { transform: rotate(90deg); }
+.dim-body { padding: 0 0 14px 238px; color: var(--muted); font-size: 13px; }
+.dim-body p { margin: 0 0 8px; }
+.hints { margin: 0; padding-left: 16px; }
+.hints li { margin: 4px 0; color: #c9d1d9; }
+@media (max-width: 720px) {
+  .dim summary { grid-template-columns: 1fr 44px; }
+  .track { grid-column: 1 / -1; order: 3; }
+  .dim-body { padding-left: 0; }
+}
+
+.chart svg { width: 100%; height: 190px; display: block; }
+.bar { fill: var(--accent); opacity: .85; }
+.bar:hover { opacity: 1; }
+.grid { stroke: rgba(255,255,255,.06); stroke-width: 1; }
+.avg { stroke: rgba(255,255,255,.25); stroke-dasharray: 3 4; stroke-width: 1; }
+.tickText { fill: #6e7681; font-size: 10px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+.stat b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11px; color: var(--muted); letter-spacing: .4px; }
+@media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+.donutWrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.donut { width: 150px; height: 150px; flex: 0 0 auto; }
+.donutText { fill: #c9d1d9; font-size: 12px; letter-spacing: .6px; }
+.legend { list-style: none; padding: 0; margin: 0; flex: 1 1 160px; display: flex; flex-direction: column; gap: 7px; font-size: 12.5px; }
+.legend li { display: flex; align-items: center; gap: 9px; }
+.legend i { width: 9px; height: 9px; border-radius: 3px; flex: 0 0 auto; }
+.legend span { color: #c9d1d9; }
+.legend b { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 500; }
+
+.authors { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.author { display: grid; grid-template-columns: 30px minmax(120px, 1.2fr) 1fr auto; gap: 12px; align-items: center; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #0b0e14; }
+.who { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.who b { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who em { font-style: normal; font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.authorBar { height: 6px; border-radius: 4px; background: rgba(255,255,255,.06); overflow: hidden; }
+.authorBar i { display: block; height: 100%; border-radius: 4px; }
+.count { font-variant-numeric: tabular-nums; font-size: 13px; text-align: right; }
+.count em { display: block; font-style: normal; font-size: 10.5px; color: var(--muted); }
+
+.checks { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+.checks li { display: grid; grid-template-columns: 18px auto; gap: 4px 8px; font-size: 12.5px; align-items: center; }
+.checks em { grid-column: 2; font-style: normal; font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mark { font-size: 12px; text-align: center; border-radius: 50%; width: 18px; height: 18px; line-height: 18px; }
+.ok .mark { background: rgba(63,185,80,.16); color: var(--green); }
+.miss .mark { background: rgba(248,81,73,.14); color: var(--red); }
+.miss .item-label { color: #8b949e; }
+@media (max-width: 520px) { .checks { grid-template-columns: 1fr; } }
+
+.churn { width: 100%; border-collapse: collapse; font-size: 13px; }
+.churn th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); padding: 0 10px 8px 0; border-bottom: 1px solid var(--line); }
+.churn td { padding: 9px 10px 9px 0; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: middle; }
+.churn tr:last-child td { border-bottom: 0; }
+.path { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 12px; color: #c9d1d9; word-break: break-all; }
+.numCell { white-space: nowrap; font-variant-numeric: tabular-nums; color: #c9d1d9; }
+.add { color: var(--green); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.del { color: var(--red); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fileBar { display: inline-block; vertical-align: middle; width: 64px; height: 5px; border-radius: 4px; background: rgba(255,255,255,.06); margin-right: 8px; overflow: hidden; }
+.fileBar i { display: block; height: 100%; background: var(--accent); }
+
+footer { margin-top: 28px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
+footer p { margin: 4px 0; }
+footer strong { color: #c9d1d9; font-weight: 600; }
+
+@media print {
+  body { background: #fff; color: #111; }
+  .card { background: #fff; border-color: #ddd; break-inside: avoid; }
+  h1, .dim-label, .stat b, .legend span, .checks li, .path, .numCell { color: #111; }
+  .muted, .facts span, .who em, .tickText { color: #555; }
+  .bar { fill: #2f6fbf; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="eyebrow"><span class="dot"></span> REPOLENS · REPOSITORY HEALTH</p>
+      <h1>express</h1>
+      <p class="desc">Fast, unopinionated, minimalist web framework</p>
+      <ul class="facts">
+        <li><span>Branch</span>master</li>
+        <li><span>Head</span>1c6f1b0f</li>
+        <li><span>Commits</span>6,183</li>
+        <li><span>History</span>Apr 8, 2010 → Oct 23, 2026</li>
+        <li><span>Files</span>216</li>
+      </ul>
+    </div>
+    <div class="hero-score">
+      <svg class="ring" viewBox="0 0 128 128" role="img" aria-label="Health score 72 out of 100">
+    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="10"/>
+    <circle cx="64" cy="64" r="52" fill="none" stroke="var(--lime)" stroke-width="10" stroke-linecap="round"
+      stroke-dasharray="235.24 91.48" transform="rotate(-90 64 64)"/>
+    <text x="64" y="72" text-anchor="middle" font-size="34" font-weight="700" fill="#e6edf3">72</text>
+    <text x="64" y="92" text-anchor="middle" font-size="10" fill="#8b949e" letter-spacing="1.2">/ 100</text>
+  </svg>
+      <div class="grade" style="color:var(--lime)">B</div>
+      <div class="grade-label">health score</div>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Scorecard</h2>
+      <p class="muted">Weighted across five dimensions — click a row for the evidence and next steps.</p>
+    </div>
+    <div class="dims">
+      <details class="dim">
+    <summary>
+      <span class="dim-label">Project hygiene<em>25% weight</em></span>
+      <span class="track"><i style="width:81%;background:var(--lime)"></i></span>
+      <span class="dim-score" style="color:var(--lime)">81<span class="chev">›</span></span>
+    </summary>
+    <div class="dim-body">
+      <p>8/11 project files present</p>
+      <ul class="hints"><li>Add Lockfile — no dependency lockfile</li><li>Add CONTRIBUTING — not present</li></ul>
+    </div>
+  </details>
+<details class="dim">
+    <summary>
+      <span class="dim-label">Activity<em>20% weight</em></span>
+      <span class="track"><i style="width:56%;background:var(--amber)"></i></span>
+      <span class="dim-score" style="color:var(--amber)">56<span class="chev">›</span></span>
+    </summary>
+    <div class="dim-body">
+      <p>13 commits in 30 days · 26 in 90 · 54% of recent weeks active</p>
+      
+    </div>
+  </details>
+<details class="dim">
+    <summary>
+      <span class="dim-label">Collaboration<em>20% weight</em></span>
+      <span class="track"><i style="width:76%;background:var(--lime)"></i></span>
+      <span class="dim-score" style="color:var(--lime)">76<span class="chev">›</span></span>
+    </summary>
+    <div class="dim-body">
+      <p>393 contributors · top author owns 56% of commits</p>
+      
+    </div>
+  </details>
+<details class="dim">
+    <summary>
+      <span class="dim-label">Code structure<em>20% weight</em></span>
+      <span class="track"><i style="width:91%;background:var(--green)"></i></span>
+      <span class="dim-score" style="color:var(--green)">91<span class="chev">›</span></span>
+    </summary>
+    <div class="dim-body">
+      <p>142 source files · 114 test files · 0 TODO markers</p>
+      
+    </div>
+  </details>
+<details class="dim" open>
+    <summary>
+      <span class="dim-label">Commit quality<em>15% weight</em></span>
+      <span class="track"><i style="width:50%;background:var(--orange)"></i></span>
+      <span class="dim-score" style="color:var(--orange)">50<span class="chev">›</span></span>
+    </summary>
+    <div class="dim-body">
+      <p>12% conventional · 69% well-sized subjects · 8% vague</p>
+      <ul class="hints"><li>Adopt Conventional Commits (feat:/fix:) so history generates changelogs and reads as intent</li></ul>
+    </div>
+  </details>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <div class="card-head">
+        <h2>Commit cadence</h2>
+        <p class="muted">Last 52 weeks · 13 commits in the last 30 days</p>
+      </div>
+      <div class="chart">
+    <svg viewBox="0 0 760 170" preserveAspectRatio="none" role="img" aria-label="Commits per week over the last 52 weeks">
+      <line x1="30" x2="756" y1="146" y2="146" class="grid"/><text x="24" y="149" text-anchor="end" class="tickText">0</text><line x1="30" x2="756" y1="81" y2="81" class="grid"/><text x="24" y="84" text-anchor="end" class="tickText">4</text><line x1="30" x2="756" y1="16" y2="16" class="grid"/><text x="24" y="19" text-anchor="end" class="tickText">8</text>
+      <rect x="30.0" y="81.0" width="11.0" height="65.0" rx="2" class="bar"><title>Oct 27, 2025 · 4 commits</title></rect><rect x="44.0" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Nov 3, 2025 · 0 commits</title></rect><rect x="57.9" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Nov 10, 2025 · 0 commits</title></rect><rect x="71.9" y="113.5" width="11.0" height="32.5" rx="2" class="bar"><title>Nov 17, 2025 · 2 commits</title></rect><rect x="85.8" y="97.3" width="11.0" height="48.8" rx="2" class="bar"><title>Nov 24, 2025 · 3 commits</title></rect><rect x="99.8" y="16.0" width="11.0" height="130.0" rx="2" class="bar"><title>Dec 1, 2025 · 8 commits</title></rect><rect x="113.8" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Dec 8, 2025 · 0 commits</title></rect><rect x="127.7" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Dec 15, 2025 · 1 commit</title></rect><rect x="141.7" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Dec 22, 2025 · 0 commits</title></rect><rect x="155.7" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Dec 29, 2025 · 0 commits</title></rect><rect x="169.6" y="16.0" width="11.0" height="130.0" rx="2" class="bar"><title>Jan 5, 2026 · 8 commits</title></rect><rect x="183.6" y="64.8" width="11.0" height="81.3" rx="2" class="bar"><title>Jan 12, 2026 · 5 commits</title></rect><rect x="197.5" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Jan 19, 2026 · 1 commit</title></rect><rect x="211.5" y="81.0" width="11.0" height="65.0" rx="2" class="bar"><title>Jan 26, 2026 · 4 commits</title></rect><rect x="225.5" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Feb 2, 2026 · 0 commits</title></rect><rect x="239.4" y="81.0" width="11.0" height="65.0" rx="2" class="bar"><title>Feb 9, 2026 · 4 commits</title></rect><rect x="253.4" y="113.5" width="11.0" height="32.5" rx="2" class="bar"><title>Feb 16, 2026 · 2 commits</title></rect><rect x="267.3" y="64.8" width="11.0" height="81.3" rx="2" class="bar"><title>Feb 23, 2026 · 5 commits</title></rect><rect x="281.3" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Mar 2, 2026 · 0 commits</title></rect><rect x="295.3" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Mar 9, 2026 · 0 commits</title></rect><rect x="309.2" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Mar 16, 2026 · 0 commits</title></rect><rect x="323.2" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Mar 23, 2026 · 0 commits</title></rect><rect x="337.2" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Mar 30, 2026 · 1 commit</title></rect><rect x="351.1" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Apr 6, 2026 · 1 commit</title></rect><rect x="365.1" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Apr 13, 2026 · 0 commits</title></rect><rect x="379.0" y="97.3" width="11.0" height="48.8" rx="2" class="bar"><title>Apr 20, 2026 · 3 commits</title></rect><rect x="393.0" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Apr 27, 2026 · 0 commits</title></rect><rect x="407.0" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>May 4, 2026 · 1 commit</title></rect><rect x="420.9" y="64.8" width="11.0" height="81.3" rx="2" class="bar"><title>May 11, 2026 · 5 commits</title></rect><rect x="434.9" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>May 18, 2026 · 0 commits</title></rect><rect x="448.8" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>May 25, 2026 · 0 commits</title></rect><rect x="462.8" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Jun 1, 2026 · 0 commits</title></rect><rect x="476.8" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Jun 8, 2026 · 1 commit</title></rect><rect x="490.7" y="48.5" width="11.0" height="97.5" rx="2" class="bar"><title>Jun 15, 2026 · 6 commits</title></rect><rect x="504.7" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Jun 22, 2026 · 0 commits</title></rect><rect x="518.7" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Jun 29, 2026 · 1 commit</title></rect><rect x="532.6" y="97.3" width="11.0" height="48.8" rx="2" class="bar"><title>Jul 6, 2026 · 3 commits</title></rect><rect x="546.6" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Jul 13, 2026 · 0 commits</title></rect><rect x="560.5" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Jul 20, 2026 · 0 commits</title></rect><rect x="574.5" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Jul 27, 2026 · 1 commit</title></rect><rect x="588.5" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Aug 3, 2026 · 0 commits</title></rect><rect x="602.4" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Aug 10, 2026 · 0 commits</title></rect><rect x="616.4" y="64.8" width="11.0" height="81.3" rx="2" class="bar"><title>Aug 17, 2026 · 5 commits</title></rect><rect x="630.3" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Aug 24, 2026 · 0 commits</title></rect><rect x="644.3" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Aug 31, 2026 · 0 commits</title></rect><rect x="658.3" y="48.5" width="11.0" height="97.5" rx="2" class="bar"><title>Sep 7, 2026 · 6 commits</title></rect><rect x="672.2" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Sep 14, 2026 · 1 commit</title></rect><rect x="686.2" y="146.0" width="11.0" height="1.0" rx="2" class="bar"><title>Sep 21, 2026 · 0 commits</title></rect><rect x="700.2" y="97.3" width="11.0" height="48.8" rx="2" class="bar"><title>Sep 28, 2026 · 3 commits</title></rect><rect x="714.1" y="16.0" width="11.0" height="130.0" rx="2" class="bar"><title>Oct 5, 2026 · 8 commits</title></rect><rect x="728.1" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Oct 12, 2026 · 1 commit</title></rect><rect x="742.0" y="129.8" width="11.0" height="16.3" rx="2" class="bar"><title>Oct 19, 2026 · 1 commit</title></rect>
+      <line x1="30" x2="756" y1="116.3" y2="116.3" class="avg"/>
+      <text x="35.5" y="164" text-anchor="start" class="tickText">Oct 27</text><text x="398.5" y="164" text-anchor="middle" class="tickText">Apr 27</text><text x="747.5" y="164" text-anchor="end" class="tickText">Oct 19</text>
+    </svg>
+  </div>
+      <div class="stats">
+        <div class="stat"><b>1.7</b><span>Per week</span></div>
+        <div class="stat"><b>14/26</b><span>Active weeks</span></div>
+        <div class="stat"><b>12d</b><span>Longest streak</span></div>
+        <div class="stat"><b>today</b><span>Last commit</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Languages</h2>
+        <p class="muted">By tracked file size</p>
+      </div>
+      <div class="donutWrap">
+    <svg class="donut" viewBox="0 0 160 160" role="img" aria-label="Language mix"><circle cx="80" cy="80" r="54" fill="none" stroke="#4f9df7" stroke-width="20"
+        stroke-dasharray="263.73 75.56"
+        stroke-dashoffset="0.00" transform="rotate(-90 80 80)"><title>JavaScript · 78%</title></circle><circle cx="80" cy="80" r="54" fill="none" stroke="#3fb950" stroke-width="20"
+        stroke-dasharray="60.84 278.45"
+        stroke-dashoffset="-265.23" transform="rotate(-90 80 80)"><title>Markdown · 18%</title></circle><circle cx="80" cy="80" r="54" fill="none" stroke="#d29922" stroke-width="20"
+        stroke-dasharray="5.63 333.66"
+        stroke-dashoffset="-327.57" transform="rotate(-90 80 80)"><title>YAML · 2%</title></circle><circle cx="80" cy="80" r="54" fill="none" stroke="#bc8cff" stroke-width="20"
+        stroke-dasharray="1.00 338.29"
+        stroke-dashoffset="-334.70" transform="rotate(-90 80 80)"><title>EJS · <1%</title></circle><circle cx="80" cy="80" r="54" fill="none" stroke="#f85149" stroke-width="20"
+        stroke-dasharray="0.00 339.51"
+        stroke-dashoffset="-337.20" transform="rotate(-90 80 80)"><title>JSON · <1%</title></circle><circle cx="80" cy="80" r="54" fill="none" stroke="#39c5cf" stroke-width="20"
+        stroke-dasharray="0.00 339.98"
+        stroke-dashoffset="-338.48" transform="rotate(-90 80 80)"><title>HBS · <1%</title></circle><text x="80" y="84" text-anchor="middle" class="donutText">JavaScript</text></svg>
+    <ul class="legend"><li><i style="background:#4f9df7"></i><span>JavaScript</span><b>78%</b></li><li><i style="background:#3fb950"></i><span>Markdown</span><b>18%</b></li><li><i style="background:#d29922"></i><span>YAML</span><b>2%</b></li><li><i style="background:#bc8cff"></i><span>EJS</span><b><1%</b></li><li><i style="background:#f85149"></i><span>JSON</span><b><1%</b></li><li><i style="background:#39c5cf"></i><span>HBS</span><b><1%</b></li></ul>
+  </div>
+    </section>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <div class="card-head">
+        <h2>Contributors</h2>
+        <p class="muted">393 authors · bus factor 1</p>
+      </div>
+      <ul class="authors"><li class="author">
+        <span class="avatar" style="background:#4f9df7">TH</span>
+        <span class="who"><b>Tj Holowaychuk</b><em>tj@vision-media.ca</em></span>
+        <span class="authorBar"><i style="width:100.0%;background:#4f9df7"></i></span>
+        <span class="count">2,790<em>56%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#3fb950">DW</span>
+        <span class="who"><b>Douglas Christopher Wilson</b><em>doug@somethingdoug.com</em></span>
+        <span class="authorBar"><i style="width:44.2%;background:#3fb950"></i></span>
+        <span class="count">1,232<em>25%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#d29922">JO</span>
+        <span class="who"><b>Jonathan Ong</b><em>jonathanrichardong@gmail.com</em></span>
+        <span class="authorBar"><i style="width:3.0%;background:#d29922"></i></span>
+        <span class="count">84<em>2%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#bc8cff">RS</span>
+        <span class="who"><b>Roman Shtylman</b><em>shtylman@gmail.com</em></span>
+        <span class="authorBar"><i style="width:2.5%;background:#bc8cff"></i></span>
+        <span class="count">70<em>1%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#f85149">DE</span>
+        <span class="who"><b>dependabot[bot]</b><em>49699333+dependabot[bot]@users.noreply.github.com</em></span>
+        <span class="authorBar"><i style="width:2.0%;background:#f85149"></i></span>
+        <span class="count">55<em>1%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#39c5cf">UG</span>
+        <span class="who"><b>Ulises Gascón</b><em>ulisesgascongonzalez@gmail.com</em></span>
+        <span class="authorBar"><i style="width:2.0%;background:#39c5cf"></i></span>
+        <span class="count">46<em><1%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#ff9bce">WT</span>
+        <span class="who"><b>Wes Todd</b><em>wes@wesleytodd.com</em></span>
+        <span class="authorBar"><i style="width:2.0%;background:#ff9bce"></i></span>
+        <span class="count">45<em><1%</em></span>
+      </li><li class="author">
+        <span class="avatar" style="background:#e3742b">SB</span>
+        <span class="who"><b>Sebastian Beltran</b><em>bjohansebas@gmail.com</em></span>
+        <span class="authorBar"><i style="width:2.0%;background:#e3742b"></i></span>
+        <span class="count">22<em><1%</em></span>
+      </li></ul>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Hygiene</h2>
+        <p class="muted">Project files that shape how others can use and join</p>
+      </div>
+      <ul class="checks"><li class="ok" title="README.md">
+      <span class="mark">✓</span>
+      <span class="item-label">README</span>
+      <em>README.md</em>
+    </li><li class="ok" title="LICENSE">
+      <span class="mark">✓</span>
+      <span class="item-label">License</span>
+      <em>LICENSE</em>
+    </li><li class="ok" title=".github\workflows\ci.yml">
+      <span class="mark">✓</span>
+      <span class="item-label">CI pipeline</span>
+      <em>.github\workflows\ci.yml</em>
+    </li><li class="ok" title="114 test files">
+      <span class="mark">✓</span>
+      <span class="item-label">Tests</span>
+      <em>114 test files</em>
+    </li><li class="ok" title="description + keywords present">
+      <span class="mark">✓</span>
+      <span class="item-label">Package metadata</span>
+      <em>description + keywords present</em>
+    </li><li class="ok" title=".gitignore">
+      <span class="mark">✓</span>
+      <span class="item-label">.gitignore</span>
+      <em>.gitignore</em>
+    </li><li class="miss" title="No dependency lockfile">
+      <span class="mark">✕</span>
+      <span class="item-label">Lockfile</span>
+      <em>No dependency lockfile</em>
+    </li><li class="miss" title="Not present">
+      <span class="mark">✕</span>
+      <span class="item-label">CONTRIBUTING</span>
+      <em>Not present</em>
+    </li><li class="ok" title="HISTORY.md">
+      <span class="mark">✓</span>
+      <span class="item-label">CHANGELOG</span>
+      <em>HISTORY.md</em>
+    </li><li class="miss" title="Not present">
+      <span class="mark">✕</span>
+      <span class="item-label">Security policy</span>
+      <em>Not present</em>
+    </li><li class="ok" title=".editorconfig">
+      <span class="mark">✓</span>
+      <span class="item-label">.editorconfig</span>
+      <em>.editorconfig</em>
+    </li></ul>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Hotspots</h2>
+      <p class="muted">Files touched by the most commits — where future bugs and merge pain live</p>
+    </div>
+    <table class="churn">
+    <thead><tr><th>File</th><th>Commits</th><th>Added</th><th>Deleted</th><th>Authors</th></tr></thead>
+    <tbody><tr>
+        <td class="path">package.json</td>
+        <td class="numCell"><span class="fileBar"><i style="width:100.0%"></i></span>1,214</td>
+        <td class="add">+1,573</td>
+        <td class="del">−1,478</td>
+        <td class="numCell">61</td>
+      </tr><tr>
+        <td class="path">History.md</td>
+        <td class="numCell"><span class="fileBar"><i style="width:79.8%"></i></span>969</td>
+        <td class="add">+4,693</td>
+        <td class="del">−1,282</td>
+        <td class="numCell">85</td>
+      </tr><tr>
+        <td class="path">lib/response.js</td>
+        <td class="numCell"><span class="fileBar"><i style="width:32.7%"></i></span>397</td>
+        <td class="add">+3,179</td>
+        <td class="del">−2,152</td>
+        <td class="numCell">85</td>
+      </tr><tr>
+        <td class="path">Readme.md</td>
+        <td class="numCell"><span class="fileBar"><i style="width:16.0%"></i></span>194</td>
+        <td class="add">+873</td>
+        <td class="del">−717</td>
+        <td class="numCell">53</td>
+      </tr><tr>
+        <td class="path">lib/application.js</td>
+        <td class="numCell"><span class="fileBar"><i style="width:14.8%"></i></span>180</td>
+        <td class="add">+1,714</td>
+        <td class="del">−1,083</td>
+        <td class="numCell">41</td>
+      </tr><tr>
+        <td class="path">lib/request.js</td>
+        <td class="numCell"><span class="fileBar"><i style="width:14.7%"></i></span>178</td>
+        <td class="add">+1,493</td>
+        <td class="del">−962</td>
+        <td class="numCell">28</td>
+      </tr><tr>
+        <td class="path">docs/guide.md</td>
+        <td class="numCell"><span class="fileBar"><i style="width:13.9%"></i></span>169</td>
+        <td class="add">+2,063</td>
+        <td class="del">−2,135</td>
+        <td class="numCell">4</td>
+      </tr><tr>
+        <td class="path">bin/express</td>
+        <td class="numCell"><span class="fileBar"><i style="width:12.8%"></i></span>155</td>
+        <td class="add">+1,328</td>
+        <td class="del">−1,374</td>
+        <td class="numCell">22</td>
+      </tr></tbody>
+  </table>
+  </section>
+
+  <footer>
+    <p>Generated by <strong>RepoLens 0.1.1</strong> on Oct 24, 2026 · 5,000 of 6,183 commits analysed (history truncated).</p>
+    <p>Free of network calls, accounts and telemetry. Run it again after your next release.</p>
+  </footer>
+</div>
+</body>
+</html>
