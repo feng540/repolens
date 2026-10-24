@@ -1,6 +1,6 @@
 {
   "name": "repolens-health",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "One command. A health report for any git repository — activity, collaboration, hygiene, structure and commit quality, scored.",
   "type": "module",
   "bin": {

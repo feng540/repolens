@@ -75,7 +75,10 @@ describe("html report", () => {
   it("is a standalone document with no external requests", () => {
     assert.match(html, /^<!doctype html>/);
     assert.doesNotMatch(html, /<script/i);
-    assert.doesNotMatch(html, /https?:\/\//);
+    assert.doesNotMatch(html, /<link|<img|<iframe|<object/i);
+    assert.doesNotMatch(html, /url\(\s*['"]?https?:/i);
+    const urls = [...html.matchAll(/https?:\/\/[^"'\s<)]+/g)].map((match) => match[0]);
+    assert.deepEqual(urls, ["https://github.com/feng540/repolens"]);
     assert.match(html, /width:\s*100%/);
   });
 

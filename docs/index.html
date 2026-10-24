@@ -45,6 +45,10 @@ h1 { margin: 0; font-size: 44px; line-height: 1.1; letter-spacing: -1.2px; }
 .grade { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-top: 2px; }
 .grade-label { font-size: 11px; letter-spacing: 1.6px; color: var(--muted); text-transform: uppercase; }
 .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; }
+.notice { border-color: rgba(210,153,34,.45); background: linear-gradient(180deg, rgba(210,153,34,.10), rgba(18,23,34,.98)); }
+.notice-title { margin: 0 0 6px; font-size: 13px; letter-spacing: .3px; color: var(--amber); font-weight: 600; }
+.notice-body { margin: 0; color: var(--muted); font-size: 13px; }
+code { font: 12px/1.5 ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace; background: rgba(255,255,255,.07); border-radius: 5px; padding: 1px 5px; color: #c9d1d9; }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
 h2 { font-size: 13px; letter-spacing: 1.6px; text-transform: uppercase; margin: 0; color: #c9d1d9; }
 .muted { color: var(--muted); font-size: 12.5px; margin: 0; }
@@ -127,6 +131,8 @@ details[open] .chev { transform: rotate(90deg); }
 footer { margin-top: 28px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
 footer p { margin: 4px 0; }
 footer strong { color: #c9d1d9; font-weight: 600; }
+footer a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+footer a:hover { color: #e6edf3; border-bottom-color: var(--muted); }
 
 @media print {
   body { background: #fff; color: #111; }
@@ -149,7 +155,7 @@ footer strong { color: #c9d1d9; font-weight: 600; }
         <li><span>Branch</span>master</li>
         <li><span>Head</span>1c6f1b0f</li>
         <li><span>Commits</span>6,183</li>
-        <li><span>History</span>Apr 8, 2010 → Oct 23, 2026</li>
+        <li><span>History</span>Jun 26, 2009 → Oct 23, 2026</li>
         <li><span>Files</span>216</li>
       </ul>
     </div>
@@ -165,6 +171,8 @@ footer strong { color: #c9d1d9; font-weight: 600; }
       <div class="grade-label">health score</div>
     </div>
   </header>
+
+  
 
   <section class="card">
     <div class="card-head">
@@ -197,19 +205,19 @@ footer strong { color: #c9d1d9; font-weight: 600; }
 <details class="dim">
     <summary>
       <span class="dim-label">Collaboration<em>20% weight</em></span>
-      <span class="track"><i style="width:76%;background:var(--lime)"></i></span>
-      <span class="dim-score" style="color:var(--lime)">76<span class="chev">›</span></span>
+      <span class="track"><i style="width:70%;background:var(--lime)"></i></span>
+      <span class="dim-score" style="color:var(--lime)">70<span class="chev">›</span></span>
     </summary>
     <div class="dim-body">
-      <p>393 contributors · top author owns 56% of commits</p>
+      <p>400 contributors · top author owns 63% of commits</p>
       
     </div>
   </details>
 <details class="dim">
     <summary>
       <span class="dim-label">Code structure<em>20% weight</em></span>
-      <span class="track"><i style="width:91%;background:var(--green)"></i></span>
-      <span class="dim-score" style="color:var(--green)">91<span class="chev">›</span></span>
+      <span class="track"><i style="width:94%;background:var(--green)"></i></span>
+      <span class="dim-score" style="color:var(--green)">94<span class="chev">›</span></span>
     </summary>
     <div class="dim-body">
       <p>142 source files · 114 test files · 0 TODO markers</p>
@@ -219,11 +227,11 @@ footer strong { color: #c9d1d9; font-weight: 600; }
 <details class="dim" open>
     <summary>
       <span class="dim-label">Commit quality<em>15% weight</em></span>
-      <span class="track"><i style="width:50%;background:var(--orange)"></i></span>
-      <span class="dim-score" style="color:var(--orange)">50<span class="chev">›</span></span>
+      <span class="track"><i style="width:49%;background:var(--orange)"></i></span>
+      <span class="dim-score" style="color:var(--orange)">49<span class="chev">›</span></span>
     </summary>
     <div class="dim-body">
-      <p>12% conventional · 69% well-sized subjects · 8% vague</p>
+      <p>9% conventional · 69% well-sized subjects · 8% vague</p>
       <ul class="hints"><li>Adopt Conventional Commits (feat:/fix:) so history generates changelogs and reads as intent</li></ul>
     </div>
   </details>
@@ -280,33 +288,33 @@ footer strong { color: #c9d1d9; font-weight: 600; }
     <section class="card">
       <div class="card-head">
         <h2>Contributors</h2>
-        <p class="muted">393 authors · bus factor 1</p>
+        <p class="muted">400 authors · bus factor 1</p>
       </div>
       <ul class="authors"><li class="author">
         <span class="avatar" style="background:#4f9df7">TH</span>
         <span class="who"><b>Tj Holowaychuk</b><em>tj@vision-media.ca</em></span>
         <span class="authorBar"><i style="width:100.0%;background:#4f9df7"></i></span>
-        <span class="count">2,790<em>56%</em></span>
+        <span class="count">3,881<em>63%</em></span>
       </li><li class="author">
         <span class="avatar" style="background:#3fb950">DW</span>
         <span class="who"><b>Douglas Christopher Wilson</b><em>doug@somethingdoug.com</em></span>
-        <span class="authorBar"><i style="width:44.2%;background:#3fb950"></i></span>
-        <span class="count">1,232<em>25%</em></span>
+        <span class="authorBar"><i style="width:31.7%;background:#3fb950"></i></span>
+        <span class="count">1,232<em>20%</em></span>
       </li><li class="author">
         <span class="avatar" style="background:#d29922">JO</span>
         <span class="who"><b>Jonathan Ong</b><em>jonathanrichardong@gmail.com</em></span>
-        <span class="authorBar"><i style="width:3.0%;background:#d29922"></i></span>
-        <span class="count">84<em>2%</em></span>
+        <span class="authorBar"><i style="width:2.2%;background:#d29922"></i></span>
+        <span class="count">84<em>1%</em></span>
       </li><li class="author">
         <span class="avatar" style="background:#bc8cff">RS</span>
         <span class="who"><b>Roman Shtylman</b><em>shtylman@gmail.com</em></span>
-        <span class="authorBar"><i style="width:2.5%;background:#bc8cff"></i></span>
+        <span class="authorBar"><i style="width:2.0%;background:#bc8cff"></i></span>
         <span class="count">70<em>1%</em></span>
       </li><li class="author">
         <span class="avatar" style="background:#f85149">DE</span>
         <span class="who"><b>dependabot[bot]</b><em>49699333+dependabot[bot]@users.noreply.github.com</em></span>
         <span class="authorBar"><i style="width:2.0%;background:#f85149"></i></span>
-        <span class="count">55<em>1%</em></span>
+        <span class="count">55<em><1%</em></span>
       </li><li class="author">
         <span class="avatar" style="background:#39c5cf">UG</span>
         <span class="who"><b>Ulises Gascón</b><em>ulisesgascongonzalez@gmail.com</em></span>
@@ -318,10 +326,10 @@ footer strong { color: #c9d1d9; font-weight: 600; }
         <span class="authorBar"><i style="width:2.0%;background:#ff9bce"></i></span>
         <span class="count">45<em><1%</em></span>
       </li><li class="author">
-        <span class="avatar" style="background:#e3742b">SB</span>
-        <span class="who"><b>Sebastian Beltran</b><em>bjohansebas@gmail.com</em></span>
+        <span class="avatar" style="background:#e3742b">AH</span>
+        <span class="who"><b>Aaron Heckmann</b><em>aaron.heckmann@gmail.com</em></span>
         <span class="authorBar"><i style="width:2.0%;background:#e3742b"></i></span>
-        <span class="count">22<em><1%</em></span>
+        <span class="count">44<em><1%</em></span>
       </li></ul>
     </section>
 
@@ -387,28 +395,34 @@ footer strong { color: #c9d1d9; font-weight: 600; }
     <thead><tr><th>File</th><th>Commits</th><th>Added</th><th>Deleted</th><th>Authors</th></tr></thead>
     <tbody><tr>
         <td class="path">package.json</td>
-        <td class="numCell"><span class="fileBar"><i style="width:100.0%"></i></span>1,214</td>
-        <td class="add">+1,573</td>
-        <td class="del">−1,478</td>
+        <td class="numCell"><span class="fileBar"><i style="width:100.0%"></i></span>1,220</td>
+        <td class="add">+1,592</td>
+        <td class="del">−1,483</td>
         <td class="numCell">61</td>
       </tr><tr>
         <td class="path">History.md</td>
-        <td class="numCell"><span class="fileBar"><i style="width:79.8%"></i></span>969</td>
-        <td class="add">+4,693</td>
-        <td class="del">−1,282</td>
+        <td class="numCell"><span class="fileBar"><i style="width:80.9%"></i></span>987</td>
+        <td class="add">+4,867</td>
+        <td class="del">−1,283</td>
         <td class="numCell">85</td>
       </tr><tr>
         <td class="path">lib/response.js</td>
-        <td class="numCell"><span class="fileBar"><i style="width:32.7%"></i></span>397</td>
+        <td class="numCell"><span class="fileBar"><i style="width:32.5%"></i></span>397</td>
         <td class="add">+3,179</td>
         <td class="del">−2,152</td>
         <td class="numCell">85</td>
       </tr><tr>
         <td class="path">Readme.md</td>
-        <td class="numCell"><span class="fileBar"><i style="width:16.0%"></i></span>194</td>
-        <td class="add">+873</td>
-        <td class="del">−717</td>
-        <td class="numCell">53</td>
+        <td class="numCell"><span class="fileBar"><i style="width:23.3%"></i></span>284</td>
+        <td class="add">+1,334</td>
+        <td class="del">−1,033</td>
+        <td class="numCell">55</td>
+      </tr><tr>
+        <td class="path">lib/express/core.js</td>
+        <td class="numCell"><span class="fileBar"><i style="width:18.3%"></i></span>223</td>
+        <td class="add">+2,101</td>
+        <td class="del">−2,101</td>
+        <td class="numCell">6</td>
       </tr><tr>
         <td class="path">lib/application.js</td>
         <td class="numCell"><span class="fileBar"><i style="width:14.8%"></i></span>180</td>
@@ -417,7 +431,7 @@ footer strong { color: #c9d1d9; font-weight: 600; }
         <td class="numCell">41</td>
       </tr><tr>
         <td class="path">lib/request.js</td>
-        <td class="numCell"><span class="fileBar"><i style="width:14.7%"></i></span>178</td>
+        <td class="numCell"><span class="fileBar"><i style="width:14.6%"></i></span>178</td>
         <td class="add">+1,493</td>
         <td class="del">−962</td>
         <td class="numCell">28</td>
@@ -427,18 +441,12 @@ footer strong { color: #c9d1d9; font-weight: 600; }
         <td class="add">+2,063</td>
         <td class="del">−2,135</td>
         <td class="numCell">4</td>
-      </tr><tr>
-        <td class="path">bin/express</td>
-        <td class="numCell"><span class="fileBar"><i style="width:12.8%"></i></span>155</td>
-        <td class="add">+1,328</td>
-        <td class="del">−1,374</td>
-        <td class="numCell">22</td>
       </tr></tbody>
   </table>
   </section>
 
   <footer>
-    <p>Generated by <strong>RepoLens 0.1.1</strong> on Oct 24, 2026 · 5,000 of 6,183 commits analysed (history truncated).</p>
+    <p>Generated by <a href="https://github.com/feng540/repolens"><strong>RepoLens 0.1.3</strong></a> on Oct 24, 2026 · 6,183 of 6,183 commits analysed.</p>
     <p>Free of network calls, accounts and telemetry. Run it again after your next release.</p>
   </footer>
 </div>

@@ -4,6 +4,12 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-24
+
+### Added
+
+- The report footer now links back to the project. Reports get forwarded, and until now the reader of a forwarded file had no way back to the tool. The link is inert: it issues no request of its own, so the report is still safe to open offline.
+
 ## [0.1.2] - 2026-10-24
 
 ### Added

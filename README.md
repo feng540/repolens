@@ -23,7 +23,7 @@ npx repolens-health .
 Dashboards exist for published packages and hosted repository analytics. What most projects don't have is a **local answer to "how healthy is this repo, really?"** that works offline, needs no account, and produces something you can attach to a review.
 
 - **No setup.** No token, no network call, no telemetry. Point it at a clone.
-- **One file out.** The report inlines its CSS and SVG — no CDN, no JavaScript. Commit it, email it, screenshot it.
+- **One file out.** The report inlines its CSS and SVG — no CDN, no JavaScript. Commit it, email it, screenshot it. The only absolute URL in it is the credit link in the footer.
 - **Actionable.** Every dimension lists the evidence behind its score and the next move, not just a number.
 
 ## What it measures
